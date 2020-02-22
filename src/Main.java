@@ -20,27 +20,27 @@ class Hash {
     }
   }
 
-      // Sort hash map by values
-      public void sortByValue() {
-          List<Map.Entry<String, Integer> > list =
-                 new LinkedList<Map.Entry<String, Integer> >(map.entrySet());
+  // Sort hash map by values
+  public void sortByValue() {
+      List<Map.Entry<String, Integer> > list =
+              new LinkedList<Map.Entry<String, Integer> >(map.entrySet());
 
-          // Sorts the list by descending order
-          Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
-              public int compare(Map.Entry<String, Integer> o1,
-                                 Map.Entry<String, Integer> o2)
-              {
-                  return (o2.getValue()).compareTo(o1.getValue());
-              }
-          });
-
-          // Reverts list back to hash map format
-          HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
-          for (Map.Entry<String, Integer> aa : list) {
-              temp.put(aa.getKey(), aa.getValue());
+      // Sorts the list by descending order
+      Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
+          public int compare(Map.Entry<String, Integer> o1,
+                              Map.Entry<String, Integer> o2)
+          {
+              return (o2.getValue()).compareTo(o1.getValue());
           }
-          map = temp;
+      });
+
+      // Reverts list back to hash map format
+      HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
+      for (Map.Entry<String, Integer> aa : list) {
+          temp.put(aa.getKey(), aa.getValue());
       }
+      map = temp;
+  }
 
   // Prints overall data
   public void printOverall() {
@@ -217,7 +217,7 @@ public class Main {
         fiveYears.printPastFiveYears();
 
         // annual data
-        for( int i = 1900; i < 2021; i++) {
+        for (int i = 1900; i < 2021; i++) {
           Hash twenty = new Hash();
           twenty.countFrequencies(Year[i]);
           twenty.sortByValue();

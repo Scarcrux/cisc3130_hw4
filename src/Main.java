@@ -10,17 +10,19 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Comparator;
 
+/* Hash map for movies */
 class Hash {
   private Map<String, Integer> map = new HashMap<String, Integer>();
+
+  /* Calculates the frequency of elements */
   public void countFrequencies(List<String> list) {
-    /* Hash map to store the frequency of element */
     for (String i : list) {
       Integer j = map.get(i);
       map.put(i, (j == null) ? 1 : j + 1);
     }
   }
 
-  // Sort hash map by values
+  // Converts hash map to list
   public void sortByValue() {
       List<Map.Entry<String, Integer> > list =
               new LinkedList<Map.Entry<String, Integer> >(map.entrySet());
@@ -42,7 +44,7 @@ class Hash {
       map = temp;
   }
 
-  // Prints overall data
+  // Prints overall movie data
   public void printOverall() {
     List<String> artistList = new ArrayList<String>();;
     StringBuilder sb = new StringBuilder();
@@ -51,7 +53,7 @@ class Hash {
     sb.append("Count");
     sb.append('\n');
 
-    /* Displays the occurrence of elements in the array list */
+    // Displays the frequency of elements in the list
     for (Map.Entry<String, Integer> val : map.entrySet()) {
       artistList.add(val.getKey());
       sb.append(val.getKey());
@@ -60,7 +62,8 @@ class Hash {
       sb.append('\n');
     }
 
-    File csvOutputFile = new File("../data/reports/Frequency.csv");
+    // Writes the string to an external CSV
+    File csvOutputFile = new File("../data/reports/Movies Released by Genre - Overall.csv");
     try (PrintWriter  writer= new PrintWriter(csvOutputFile)) {
       writer.write(sb.toString());
     } catch (FileNotFoundException error) {
@@ -77,7 +80,7 @@ class Hash {
     sb.append("Count");
     sb.append('\n');
 
-    /* Displays the occurrence of elements in the array list */
+    // Displays the frequency of elements in the list
     for (Map.Entry<String, Integer> val : map.entrySet()) {
       artistList.add(val.getKey());
       sb.append(val.getKey());
@@ -86,7 +89,8 @@ class Hash {
       sb.append('\n');
     }
 
-    File csvOutputFile = new File("../data/reports/Past 5 Years Frequency.csv");
+    // Writes the string to an external CSV
+    File csvOutputFile = new File("../data/reports/Movies Released by Genre - Past 5 Years.csv");
     try (PrintWriter  writer= new PrintWriter(csvOutputFile)) {
       writer.write(sb.toString());
     } catch (FileNotFoundException error) {
@@ -94,7 +98,7 @@ class Hash {
     }
   }
 
-  // Prints data for a given year
+  /* Prints data for a given year */
   public void printYear(Integer year) {
     List<String> artistList = new ArrayList<String>();;
     StringBuilder sb = new StringBuilder();
@@ -103,7 +107,7 @@ class Hash {
     sb.append("Count");
     sb.append('\n');
 
-    /* Displays the occurrence of elements in the array list */
+    // Displays the frequency of elements in the list
     for (Map.Entry<String, Integer> val : map.entrySet()) {
       artistList.add(val.getKey());
       sb.append(val.getKey());
@@ -112,7 +116,8 @@ class Hash {
       sb.append('\n');
     }
 
-    File csvOutputFile = new File("../data/reports/annual/" + year + ".csv");
+    // Writes the string to an external CSV
+    File csvOutputFile = new File("../data/reports/Movies Released by Genre - Annual/" + year + ".csv");
     try (PrintWriter  writer= new PrintWriter(csvOutputFile)) {
       writer.write(sb.toString());
     } catch (FileNotFoundException error) {
@@ -125,7 +130,7 @@ class Hash {
 public class Main {
 
   public static void main(String[] args) {
-    // Creates an array in which we will store the names of files and directories
+    // Creates an array that stores the names of files and directories
     String[] myFiles;
 
     // Creates a new File instance by converting the given pathname string
@@ -133,25 +138,21 @@ public class Main {
     String path = "../data/";
     File f = new File(path);
 
-      // This filter will only include files ending with .csv
+      // Filters filename extensions to only include CSV
     FilenameFilter filter = new FilenameFilter() {
       @Override
       public boolean accept(File f, String name) {
           return name.endsWith(".csv");
       }
     };
-    // This is how to apply the filter
     myFiles = f.list(filter);
 
-    // appends the path to the filename
+    // Appends the path to the filename
     for (int i = 0; i < myFiles.length; i++) {
       myFiles[i] = path + myFiles[i];
     }
 
-    for (String element: myFiles) {
-      System.out.println(element);
-    }
-
+    // Variables for reading the source CSV movie data
     String csvFile = myFiles[0];
     BufferedReader br = null;
     String line = "";
@@ -170,42 +171,41 @@ public class Main {
       br = new BufferedReader(new FileReader(csvFile));
       while ((line = br.readLine()) != null) {
         // Uses comma as a delimiter
-        String[] country = line.split(cvsSplitBy);
-        String[] genres = country[2].split("\\|");
-        String temp = country[1];
+        String[] movies = line.split(cvsSplitBy);
+        String[] genres = movies[2].split("\\|");
+        String temp = movies[1];
 
-        // regex patterns for (year) and movie title up to (
-        String regex = "^([^()]*)\\((()]*)\\)(.*)$";
+        // RegEx patterns for (year) and movie title up to (
         Pattern p = Pattern.compile("\\((\\d{4}?)\\)$");
         Matcher m = p.matcher(temp);
 
         while(m.find()) {
-          if (country[1].equals("title")) {
-          } else if (country[1] == null) {
+          if (movies[1].equals("title")) {
+          } else if (movies[1] == null) {
           } else {
-            // data for past 5 years
+            // Populates arrays representing movie genre data for past 5 years
             int year = Integer.parseInt(m.group(0).replace("(", "").replace(")", ""));
             if (year == 2018 || year == 2017 || year == 2016 || year == 2015 || year == 2014) {
-              for (String blah: genres) {
-                valuesForPastFiveYears.add(blah);
+              for (String movie: genres) {
+                valuesForPastFiveYears.add(movie);
               }
            }
 
-            // data per year
+            // Populates arrays representing annual movie genre data
             if (year < 2021) {
-              for (String blah: genres) {
-                Year[year].add(blah);
+              for (String movie: genres) {
+                Year[year].add(movie);
               }
             }
 
-            // overall data
-            for (String blah: genres) {
-              values.add(blah);
+            // Populates array representing overall movie genre data
+            for (String movie: genres) {
+              values.add(movie);
             }
           }
         }
 
-        // generating reports
+        // Generates reports
         Hash count = new Hash();
         count.countFrequencies(values);
         count.sortByValue();
@@ -216,7 +216,7 @@ public class Main {
         fiveYears.sortByValue();
         fiveYears.printPastFiveYears();
 
-        // annual data
+        // Annual data reports
         for (int i = 1900; i < 2021; i++) {
           Hash twenty = new Hash();
           twenty.countFrequencies(Year[i]);

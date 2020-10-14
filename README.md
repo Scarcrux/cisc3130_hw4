@@ -1,6 +1,6 @@
 # cisc3130_hw4
 
-Clone this repository and run Main.java.
+Clone this repository and run src/Main.java.
 
 Learning Objectives
 
